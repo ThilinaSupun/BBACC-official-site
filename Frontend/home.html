@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BBACC – Big Book Accountancy & Training Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --orange:   #F59E0B;
+    --orange-d: #D97706;
+    --teal:     #2DD4BF;
+    --teal-d:   #0F9D8C;
+    --red:      #F87171;
+    --green:    #4ADE80;
+    --green-d:  #22C55E;
+
+    --bg:       #0D0D0F;
+    --bg2:      #131318;
+    --bg3:      #1A1A22;
+    --card:     #18181F;
+    --card2:    #1E1E28;
+    --border:   rgba(255,255,255,0.07);
+    --border2:  rgba(255,255,255,0.12);
+
+    --white:    #FFFFFF;
+    --text:     #E2E2E8;
+    --muted:    #8A8A9A;
+
+    --nav-h: 68px;
+    --section-px: clamp(20px, 5vw, 80px);
+    --section-py: clamp(64px, 8vw, 112px);
+
+    --glow-orange: rgba(245,158,11,0.18);
+    --glow-teal:   rgba(45,212,191,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg); color: var(--text); overflow-x: hidden;
+  }
+  ::selection { background: var(--orange); color: #000; }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--section-px); height: var(--nav-h);
+    background: rgba(13,13,15,0.85); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border); transition: box-shadow .3s, background .3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.5); background: rgba(13,13,15,0.96); }
+  .nav-logo img { height: 40px; display: block; border-radius: 6px; }
+  .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+  .nav-links a {
+    font-family: 'Urbanist', sans-serif; font-size: .82rem; font-weight: 600;
+    text-decoration: none; color: var(--muted); letter-spacing: .06em;
+    text-transform: uppercase; position: relative; transition: color .2s;
+  }
+  .nav-links a::after {
+    content:''; position: absolute; bottom:-4px; left:0; right:0; height:2px;
+    background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform .25s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    background: var(--orange) !important; color: #000 !important;
+    padding: 10px 22px; border-radius: 8px; font-weight: 800 !important; letter-spacing: .04em;
+    transition: background .2s, transform .15s !important;
+  }
+  .nav-cta::after { display:none !important; }
+  .nav-cta:hover { background: var(--orange-d) !important; transform: translateY(-1px); }
+
+  .nav-burger {
+    display: none; flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 44px; cursor: pointer;
+    background: none; border: 1px solid var(--border2); padding: 10px;
+    border-radius: 8px; transition: background .2s;
+  }
+  .nav-burger:hover { background: var(--card2); }
+  .nav-burger span {
+    display: block; width: 100%; height: 2px;
+    background: var(--text); border-radius: 2px;
+    transition: transform .3s, opacity .3s, width .3s;
+  }
+  .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
+  .nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+    background: rgba(13,13,15,0.98); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border2);
+    flex-direction: column; padding: 20px var(--section-px) 28px; gap: 4px;
+    z-index: 190; transform: translateY(-10px); opacity: 0;
+    transition: transform .3s, opacity .3s; pointer-events: none;
+  }
+  .mobile-menu.open { display: flex; transform: translateY(0); opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: 'Urbanist', sans-serif; font-size: 1rem; font-weight: 700;
+    text-decoration: none; color: var(--muted); letter-spacing: .05em;
+    text-transform: uppercase; padding: 14px 0;
+    border-bottom: 1px solid var(--border); display: block; transition: color .2s;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { color: var(--white); }
+  .mobile-menu .m-cta {
+    margin-top: 12px; background: var(--orange); color: #000 !important;
+    padding: 14px 24px; border-radius: 10px; text-align: center;
+    border-bottom: none !important; font-weight: 800 !important;
+  }
+  .mobile-menu .m-cta:hover { background: var(--orange-d); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: calc(var(--nav-h) + 48px) var(--section-px) 72px;
+    gap: clamp(32px, 5vw, 80px);
+    background: var(--bg); position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content:''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 60px 60px; pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-glow-1 {
+    position: absolute; top: -160px; right: -160px;
+    width: clamp(320px,55vw,680px); height: clamp(320px,55vw,680px);
+    background: radial-gradient(circle, var(--glow-orange) 0%, transparent 65%);
+    pointer-events: none; border-radius: 50%;
+  }
+  .hero-glow-2 {
+    position: absolute; bottom: -120px; left: -100px;
+    width: clamp(240px,40vw,480px); height: clamp(240px,40vw,480px);
+    background: radial-gradient(circle, var(--glow-teal) 0%, transparent 65%);
+    pointer-events: none; border-radius: 50%;
+  }
+
+  .hero-text { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
+    padding: 7px 16px; border-radius: 30px; margin-bottom: 28px;
+    font-size: .75rem; font-weight: 600; color: var(--orange); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .hero-badge span {
+    width:7px; height:7px; background:var(--orange); border-radius:50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+    50% { opacity:.7; transform:scale(1.3); box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+  }
+
+  h1 {
+    font-family: 'Urbanist', sans-serif;
+    font-size: clamp(2.5rem, 5.2vw, 4.4rem);
+    font-weight: 900; line-height: 1.05; color: var(--white);
+    margin-bottom: 24px; letter-spacing: -0.025em;
+  }
+  h1 em { font-style: normal; color: var(--teal); }
+  .hero-desc {
+    font-size: clamp(.93rem, 1.4vw, 1.05rem); line-height: 1.8;
+    color: var(--muted); max-width: 480px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--orange); color: #000;
+    padding: 14px 30px; border-radius: 10px;
+    font-family: 'Urbanist', sans-serif; font-size: .88rem; font-weight: 800;
+    text-decoration: none; letter-spacing: .04em; text-transform: uppercase;
+    transition: background .2s, transform .15s, box-shadow .2s; display: inline-block; white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--orange-d); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,158,11,0.35); }
+
+  .btn-outline {
+    border: 1.5px solid var(--border2); color: var(--text);
+    padding: 13px 28px; border-radius: 10px;
+    font-family: 'Urbanist', sans-serif; font-size: .88rem; font-weight: 700;
+    text-decoration: none; letter-spacing: .04em; text-transform: uppercase;
+    transition: border-color .2s, color .2s, transform .15s, background .2s;
+    display: inline-block; white-space: nowrap; background: var(--card);
+  }
+  .btn-outline:hover { border-color: var(--teal); color: var(--teal); background: rgba(45,212,191,0.06); transform: translateY(-2px); }
+
+  .hero-visual { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+  .hero-logo-wrap {
+    background: var(--card); border: 1px solid var(--border2); border-radius: 28px;
+    padding: clamp(28px, 4vw, 48px);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    animation: floatUp 4s ease-in-out infinite alternate;
+    width: 100%; max-width: 340px; position: relative;
+  }
+  .hero-logo-wrap::before {
+    content:''; position: absolute; inset:-1px; border-radius: 28px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.2), transparent 50%, rgba(45,212,191,0.1));
+    pointer-events: none;
+  }
+  .hero-logo-wrap img { width: 100%; max-width: 200px; height: auto; border-radius: 8px; }
+  @keyframes floatUp { from { transform: translateY(0); } to { transform: translateY(-18px); } }
+
+  .hero-stats { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 22px; text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3); min-width: 100px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::after { content:''; position: absolute; top:0; left:0; right:0; height:2px; background: var(--orange); }
+  .stat-card:nth-child(2)::after { background: var(--teal); }
+  .stat-card:nth-child(3)::after { background: var(--green); }
+  .stat-num { font-family: 'Urbanist', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--white); line-height: 1; }
+  .stat-lbl { font-size: .68rem; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: .08em; }
+
+  /* ── ABOUT ── */
+  #about {
+    padding: var(--section-py) var(--section-px); background: var(--bg2);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(36px, 6vw, 96px); align-items: center;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  #about h2 {
+    font-family: 'Urbanist', sans-serif; font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+    font-weight: 900; line-height: 1.06; color: var(--white);
+    margin-bottom: 22px; letter-spacing: -0.025em;
+  }
+  #about h2 em { font-style: normal; color: var(--orange); }
+  #about > div > p { color: var(--muted); line-height: 1.85; margin-bottom: 14px; font-size: .95rem; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .about-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    transition: background .2s, transform .2s, border-color .2s; position: relative; overflow: hidden;
+  }
+  .about-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+  .about-card:hover { background: var(--card2); transform: translateY(-4px); border-color: var(--border2); }
+  .about-card-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .about-card h4 { font-family: 'Urbanist', sans-serif; font-size: .93rem; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .about-card p { font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.6; }
+
+  /* ── SERVICES ── */
+  #services { padding: var(--section-py) var(--section-px); background: var(--bg); }
+  .section-label {
+    font-family: 'Urbanist', sans-serif; font-size: .72rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--orange); margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Urbanist', sans-serif; font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+    font-weight: 900; color: var(--white); margin-bottom: 14px; line-height: 1.06; letter-spacing: -0.025em;
+  }
+  .section-sub { font-size: .97rem; color: var(--muted); max-width: 520px; line-height: 1.75; margin-bottom: clamp(36px,5vw,64px); }
+
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  .service-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px 26px;
+    position: relative; overflow: hidden;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .service-card::before {
+    content:''; position:absolute; inset:0; border-radius:20px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 60%); pointer-events: none;
+  }
+  .service-card:hover { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
+
+  .service-card.accounting::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--teal); border-radius:2px 2px 0 0; }
+  .service-card.accounting { border-color: rgba(45,212,191,0.15); }
+  .service-card.accounting:hover { border-color: rgba(45,212,191,0.35); box-shadow: 0 24px 64px rgba(45,212,191,0.07); }
+  .service-card.accounting .s-icon { background: rgba(45,212,191,0.1); color: var(--teal); }
+
+  .service-card.highlight::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--orange); border-radius:2px 2px 0 0; }
+  .service-card.highlight { border-color: rgba(245,158,11,0.2); }
+  .service-card.highlight:hover { border-color: rgba(245,158,11,0.45); box-shadow: 0 24px 64px rgba(245,158,11,0.1); }
+  .service-card.highlight .s-icon { background: rgba(245,158,11,0.12); color: var(--orange); }
+  .service-card.highlight h3 { color: var(--white); }
+  .service-card.highlight p { color: var(--muted); }
+  .service-card.highlight .s-tag { background: rgba(245,158,11,0.12); color: var(--orange); }
+
+  .service-card.highlight-green::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--green); border-radius:2px 2px 0 0; }
+  .service-card.highlight-green { border-color: rgba(74,222,128,0.15); }
+  .service-card.highlight-green:hover { border-color: rgba(74,222,128,0.4); box-shadow: 0 24px 64px rgba(74,222,128,0.07); }
+  .service-card.highlight-green .s-icon { background: rgba(74,222,128,0.1); color: var(--green); }
+  .service-card.highlight-green h3 { color: var(--white); }
+  .service-card.highlight-green p { color: var(--muted); }
+  .service-card.highlight-green .s-tag { background: rgba(74,222,128,0.1); color: var(--green); }
+
+  .service-card.highlight-red::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--red); border-radius:2px 2px 0 0; }
+  .service-card.highlight-red { border-color: rgba(248,113,113,0.15); }
+  .service-card.highlight-red:hover { border-color: rgba(248,113,113,0.4); box-shadow: 0 24px 64px rgba(248,113,113,0.07); }
+  .service-card.highlight-red .s-icon { background: rgba(248,113,113,0.1); color: var(--red); }
+  .service-card.highlight-red h3 { color: var(--white); }
+  .service-card.highlight-red p { color: var(--muted); }
+  .service-card.highlight-red .s-tag { background: rgba(248,113,113,0.1); color: var(--red); }
+
+  .featured-badge {
+    position: absolute; top: 18px; right: 18px;
+    background: rgba(245,158,11,0.15); color: var(--orange);
+    border: 1px solid rgba(245,158,11,0.3);
+    font-family: 'Urbanist', sans-serif; font-size: .6rem; font-weight: 800;
+    letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+  }
+  .highlight-green .featured-badge { background: rgba(74,222,128,0.12); color: var(--green); border-color: rgba(74,222,128,0.3); }
+  .highlight-red .featured-badge   { background: rgba(248,113,113,0.12); color: var(--red);   border-color: rgba(248,113,113,0.3); }
+
+  .s-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; margin-bottom: 18px; }
+  .service-card h3 { font-family: 'Urbanist', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: -0.01em; }
+  .service-card p { font-size: .865rem; color: var(--muted); line-height: 1.68; margin-bottom: 18px; }
+  .s-tag { display: inline-block; background: rgba(45,212,191,0.1); color: var(--teal); font-size: .7rem; font-weight: 600; padding: 5px 13px; border-radius: 20px; letter-spacing: .04em; }
+
+  /* ── WHY US ── */
+  #why {
+    padding: var(--section-py) var(--section-px); background: var(--bg2); text-align: center;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  #why .section-label, #why .section-title, #why .section-sub { text-align: center; margin-left: auto; margin-right: auto; }
+  .why-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+  .why-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 36px 22px; text-align: center;
+    transition: transform .2s, box-shadow .2s, border-color .2s; position: relative; overflow: hidden;
+  }
+  .why-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--teal); }
+  .why-card:nth-child(2)::after { background: var(--orange); }
+  .why-card:nth-child(3)::after { background: var(--green); }
+  .why-card:nth-child(4)::after { background: var(--orange); }
+  .why-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.35); border-color: var(--border2); }
+  .why-card .icon { font-size: 2.1rem; margin-bottom: 14px; }
+  .why-card h4 { font-family: 'Urbanist', sans-serif; font-size: 1rem; font-weight: 800; color: var(--white); margin-bottom: 8px; letter-spacing: -0.01em; }
+  .why-card p { font-size: .83rem; color: var(--muted); line-height: 1.68; }
+
+  /* ── CONTACT ── */
+  #contact {
+    padding: var(--section-py) var(--section-px); background: var(--bg);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 96px); align-items: start;
+  }
+  #contact h2 {
+    font-family: 'Urbanist', sans-serif; font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+    font-weight: 900; color: var(--white); margin-bottom: 18px; line-height: 1.06; letter-spacing: -0.025em;
+  }
+  #contact h2 em { font-style: normal; color: var(--orange); }
+  #contact > div > p { color: var(--muted); line-height: 1.8; margin-bottom: 32px; font-size: .95rem; }
+  .contact-info { display: flex; flex-direction: column; gap: 14px; }
+  .ci { display: flex; align-items: center; gap: 14px; color: var(--text); font-size: .9rem; }
+  .ci-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px;
+    color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; font-size: .9rem;
+    outline: none; transition: border-color .2s, background .2s, box-shadow .2s; width: 100%;
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder { color: var(--muted); }
+  .contact-form input:focus,
+  .contact-form textarea:focus,
+  .contact-form select:focus { border-color: var(--orange); background: var(--card2); box-shadow: 0 0 0 3px rgba(245,158,11,0.1); }
+  .contact-form textarea { min-height: 120px; resize: vertical; }
+  .contact-form select option { background: var(--card2); color: var(--white); }
+  .btn-send {
+    background: var(--orange); color: #000; border: none; border-radius: 12px; padding: 16px 32px;
+    font-family: 'Urbanist', sans-serif; font-size: .9rem; font-weight: 800;
+    letter-spacing: .05em; text-transform: uppercase; cursor: pointer; width: 100%;
+    transition: background .2s, transform .15s, box-shadow .2s;
+  }
+  .btn-send:hover { background: var(--orange-d); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,158,11,0.3); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: clamp(24px,4vw,42px) var(--section-px);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  footer img { height: 34px; border-radius: 6px; }
+  footer p { color: var(--muted); font-size: .8rem; }
+  .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); font-size: .8rem; text-decoration: none; transition: color .2s; }
+  .footer-links a:hover { color: var(--orange); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 860px) {
+    :root { --nav-h: 64px; }
+    .nav-links { display: none; }
+    .nav-burger { display: flex; }
+    #hero { grid-template-columns: 1fr; text-align: center; padding: calc(var(--nav-h) + 36px) var(--section-px) 56px; gap: 44px; }
+    .hero-text { display: flex; flex-direction: column; align-items: center; }
+    .hero-desc { margin: 0 auto 32px; }
+    .hero-actions { justify-content: center; }
+    .hero-logo-wrap { max-width: 288px; padding: 30px; }
+    .hero-glow-1 { width: 280px; height: 280px; top:-60px; right:-60px; }
+    .hero-glow-2 { width: 220px; height: 220px; }
+    #about { grid-template-columns: 1fr; gap: 44px; }
+    #about .about-grid { max-width: 540px; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    #contact { grid-template-columns: 1fr; gap: 48px; }
+    .form-row { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    :root { --nav-h: 60px; }
+    h1 { font-size: clamp(2rem, 8.5vw, 2.9rem); }
+    .hero-logo-wrap { max-width: 240px; padding: 22px; }
+    .hero-stats { gap: 10px; }
+    .stat-card { min-width: 86px; padding: 14px 14px; }
+    .stat-num { font-size: 1.5rem; }
+    .btn-primary, .btn-outline { padding: 13px 22px; font-size: .82rem; }
+    .about-grid { grid-template-columns: 1fr; max-width: 100%; }
+    .services-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .why-card { padding: 26px 16px; }
+    .why-card .icon { font-size: 1.7rem; }
+    .why-card h4 { font-size: .88rem; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .footer-links { gap: 16px; }
+  }
+  @media (max-width: 360px) {
+    .hero-actions { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-outline { width: 100%; text-align: center; }
+    .why-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-logo"><a href="#hero"><img src="./img/logo.jpeg" alt="BBACC Logo"></a></div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+  <button class="nav-burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<nav class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile menu">
+  <a href="#hero"     onclick="closeMobile()">Home</a>
+  <a href="#about"    onclick="closeMobile()">About</a>
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#why"      onclick="closeMobile()">Why Us</a>
+  <a href="#contact"  onclick="closeMobile()" class="m-cta">Contact Us</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-text">
+    <div class="hero-badge"><span></span> Trusted Since Day One</div>
+    <h1>Accounting &amp;<br/><em>Technology</em><br/>Solutions</h1>
+    <p class="hero-desc">We bridge finance and technology — delivering expert accountancy consulting, cutting-edge software, and mobile solutions that grow your business.</p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">Explore Services</a>
+      <a href="#contact"  class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-logo-wrap"><img src="./img/logo.jpeg" alt="BBACC"></div>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="stat-num">500+</div><div class="stat-lbl">Clients</div></div>
+      <div class="stat-card"><div class="stat-num">10+</div><div class="stat-lbl">Years</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-lbl">Services</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <h2>Who We <em>Are</em></h2>
+    <p>BBACC – Big Book Accountancy and Training Academy – is a full-spectrum consultancy and technology firm dedicated to empowering businesses with precision financial guidance and smart digital solutions.</p>
+    <p>Our motto <strong style="color:var(--orange)">"Every One Are Linked"</strong> reflects our commitment to seamlessly connecting businesses, systems, and people.</p>
+    <a href="#contact" class="btn-primary" style="margin-top:20px;display:inline-block;">Work With Us</a>
+  </div>
+  <div class="about-grid">
+    <div class="about-card reveal reveal-delay-1"><div class="about-card-icon">📊</div><h4>Finance Expertise</h4><p>Decades of accountancy &amp; advisory experience</p></div>
+    <div class="about-card reveal reveal-delay-2"><div class="about-card-icon">💻</div><h4>Tech-Driven</h4><p>Modern software &amp; mobile solutions</p></div>
+    <div class="about-card reveal reveal-delay-3"><div class="about-card-icon">🔒</div><h4>Secure Systems</h4><p>Internal controls &amp; compliance-ready</p></div>
+    <div class="about-card reveal reveal-delay-4"><div class="about-card-icon">🌐</div><h4>Fully Linked</h4><p>Integrated systems across every function</p></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-label">What We Offer</div>
+  <h2 class="section-title">Our Services</h2>
+  <p class="section-sub">From accountancy advisory to enterprise-grade software — end-to-end solutions tailored to your business.</p>
+  <div class="services-grid">
+    <div class="service-card accounting reveal">
+      <div class="s-icon">📋</div><h3>Accounting Consultancy</h3>
+      <p>Professional accounting consultancy services tailored to your business needs, ensuring accuracy, compliance, and clarity in your financial operations.</p>
+      <span class="s-tag">Accountancy</span>
+    </div>
+    <div class="service-card accounting reveal reveal-delay-1">
+      <div class="s-icon">🗂️</div><h3>Accounting System Advisor</h3>
+      <p>Expert guidance in selecting, configuring, and optimising accounting systems that align perfectly with your business workflows and reporting needs.</p>
+      <span class="s-tag">Advisory</span>
+    </div>
+    <div class="service-card accounting reveal reveal-delay-2">
+      <div class="s-icon">🛡️</div><h3>Internal Control System</h3>
+      <p>Design and implementation of robust internal control frameworks to minimise risk, prevent errors, and ensure governance across your organisation.</p>
+      <span class="s-tag">Risk &amp; Control</span>
+    </div>
+    <div class="service-card accounting reveal reveal-delay-3">
+      <div class="s-icon">📦</div><h3>QuickBooks Advisor</h3>
+      <p>Certified QuickBooks advisory — setup, training, troubleshooting, and optimisation for small to medium businesses.</p>
+      <span class="s-tag">QuickBooks</span>
+    </div>
+    <div class="service-card highlight reveal reveal-delay-1">
+      <div class="featured-badge">⭐ Featured</div>
+      <div class="s-icon">📱</div><h3>Mobile App Development</h3>
+      <p>End-to-end mobile app development for iOS and Android. From concept to launch — fast, intuitive, and scalable apps for your business.</p>
+      <span class="s-tag">iOS · Android</span>
+    </div>
+    <div class="service-card highlight reveal reveal-delay-2">
+      <div class="featured-badge">⭐ Featured</div>
+      <div class="s-icon">🖥️</div><h3>Software &amp; Mobile Solutions</h3>
+      <p>Custom software development and integrated mobile solutions — designed to streamline processes, boost productivity, and scale with growth.</p>
+      <span class="s-tag">Custom Software</span>
+    </div>
+    <div class="service-card highlight reveal reveal-delay-3">
+      <div class="featured-badge">⭐ Featured</div>
+      <div class="s-icon">🏪</div><h3>POS System &amp; ERP Solution</h3>
+      <p>Powerful POS and ERP solutions that unify your operations — from inventory and sales to finance and HR — in one platform.</p>
+      <span class="s-tag">POS · ERP</span>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="section-label">Why BBACC</div>
+  <h2 class="section-title">The BBACC Difference</h2>
+  <p class="section-sub" style="margin:0 auto clamp(36px,5vw,64px);">We don't just consult — we build, implement, and stand behind everything we deliver.</p>
+  <div class="why-grid">
+    <div class="why-card reveal"><div class="icon">🎯</div><h4>Precision-First</h4><p>Every solution is meticulously crafted to meet your exact business requirements — no generic templates.</p></div>
+    <div class="why-card reveal reveal-delay-1"><div class="icon">⚡</div><h4>Fast Delivery</h4><p>Agile workflows and dedicated teams ensure your projects are delivered on time, every time.</p></div>
+    <div class="why-card reveal reveal-delay-2"><div class="icon">🔗</div><h4>Fully Integrated</h4><p>We build systems that talk to each other — accounting, software, mobile, and ERP, all connected.</p></div>
+    <div class="why-card reveal reveal-delay-3"><div class="icon">🤝</div><h4>Ongoing Support</h4><p>Our relationship doesn't end at delivery — continued support, training, and optimisation included.</p></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="reveal">
+    <h2>Let's <em>Connect</em></h2>
+    <p>Ready to transform your business? Get in touch with our team and let's build something exceptional together.</p>
+    <div class="contact-info">
+      <div class="ci"><div class="ci-icon">📧</div><span>hasantha2233@gmail.com</span></div>
+      <div class="ci"><div class="ci-icon">📞</div><span>+94 71 424 3478</span></div>
+      <div class="ci"><div class="ci-icon">📍</div><span>Kurunegala, Sri Lanka</span></div>
+    </div>
+  </div>
+  <form class="contact-form reveal reveal-delay-1" onsubmit="handleSubmit(event)">
+    <div class="form-row">
+      <input type="text" placeholder="Your Name" required/>
+      <input type="email" placeholder="Email Address" required/>
+    </div>
+    <input type="text" placeholder="Company Name"/>
+    <select>
+      <option value="" disabled selected>Select a Service</option>
+      <option>Accounting Consultancy</option>
+      <option>Accounting System Advisory</option>
+      <option>Internal Control System</option>
+      <option>QuickBooks Advisory</option>
+      <option>Mobile App Development</option>
+      <option>Software / Mobile Solution</option>
+      <option>POS System / ERP Solution</option>
+    </select>
+    <textarea placeholder="Tell us about your project..."></textarea>
+    <button type="submit" class="btn-send">Send Message →</button>
+  </form>
+</section>
+
+<footer>
+  <img src="./img/logo.jpeg" alt="BBACC Logo">
+  <p>© 2026 BBACC – Big Book Accountancy &amp; Training Academy. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#hero">Home</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  burger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    burger.classList.toggle('open', isOpen);
+    burger.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  function closeMobile() {
+    mobileMenu.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!burger.contains(e.target) && !mobileMenu.contains(e.target)) closeMobile();
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 860) closeMobile();
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.btn-send');
+    btn.textContent = '✓ Message Sent!';
+    btn.style.background = 'var(--green)';
+    btn.style.color = '#000';
+    setTimeout(() => {
+      btn.textContent = 'Send Message →';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+</script>
+</body>
+</html>
+
+
