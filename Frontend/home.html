@@ -615,7 +615,7 @@
       <a href="#services" class="btn-primary">Explore Services</a>
       <a href="#contact"  class="btn-outline">Get In Touch</a>
     </div>
-  </div>
+  </div> 
   <div class="hero-visual">
     <div class="hero-logo-wrap"><img src="./img/logo.jpeg" alt="BBACC"></div>
     <div class="hero-stats">
@@ -708,30 +708,34 @@
     <h2>Let's <em>Connect</em></h2>
     <p>Ready to transform your business? Get in touch with our team and let's build something exceptional together.</p>
     <div class="contact-info">
-      <div class="ci"><div class="ci-icon">📧</div><span>chanaka@bbaccapp.com</span></div>
+      <div class="ci"><div class="ci-icon">📧</div><span>hasantha@bbaccapp.com</span></div>
       <div class="ci"><div class="ci-icon">📞</div><span>+94 71 424 3478</span></div>
+      <div class="ci"><div class="ci-icon">📞</div><span>+94 70 311 4113</span></div>
       <div class="ci"><div class="ci-icon">📍</div><span>Kurunegala, Sri Lanka</span></div>
     </div>
   </div>
-  <form class="contact-form reveal reveal-delay-1" onsubmit="handleSubmit(event)">
-    <div class="form-row">
-      <input type="text" placeholder="Your Name" required/>
-      <input type="email" placeholder="Email Address" required/>
-    </div>
-    <input type="text" placeholder="Company Name"/>
-    <select>
-      <option value="" disabled selected>Select a Service</option>
-      <option>Accounting Consultancy</option>
-      <option>Accounting System Advisory</option>
-      <option>Internal Control System</option>
-      <option>QuickBooks Advisory</option>
-      <option>Mobile App Development</option>
-      <option>Software / Mobile Solution</option>
-      <option>POS System / ERP Solution</option>
-    </select>
-    <textarea placeholder="Tell us about your project..."></textarea>
-    <button type="submit" class="btn-send">Send Message →</button>
-  </form>
+<!-- AFTER -->
+<form class="contact-form reveal reveal-delay-1" onsubmit="handleSubmit(event)">
+  <input type="hidden" name="access_key" value="83020083-8bd4-45aa-894e-d9714986a4df"/>
+  <input type="hidden" name="subject" value="New Contact from BBACC Website"/>
+  <div class="form-row">
+    <input type="text" name="name" placeholder="Your Name" required/>
+    <input type="email" name="email" placeholder="Email Address" required/>
+  </div>
+  <input type="text" name="company" placeholder="Company Name"/>
+  <select name="service">
+    <option value="" disabled selected>Select a Service</option>
+    <option>Accounting Consultancy</option>
+    <option>Accounting System Advisory</option>
+    <option>Internal Control System</option>
+    <option>QuickBooks Advisory</option>
+    <option>Mobile App Development</option>
+    <option>Software / Mobile Solution</option>
+    <option>POS System / ERP Solution</option>
+  </select>
+  <textarea name="message" placeholder="Tell us about your project..."></textarea>
+  <button type="submit" class="btn-send">Send Message →</button>
+</form>
 </section>
 
 <!-- FOOTER -->
@@ -815,18 +819,49 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   // Contact form
-  function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('.btn-send');
-    btn.textContent = '✓ Message Sent!';
-    btn.style.background = 'var(--green)';
-    btn.style.color = '#000';
-    setTimeout(() => {
-      btn.textContent = 'Send Message →';
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 3000);
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = form.querySelector('.btn-send');
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  const data = new FormData(form);
+  const json = Object.fromEntries(data.entries());
+
+  try {
+    const res  = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(json)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      btn.textContent = '✓ Message Sent!';
+      btn.style.background = 'var(--green)';
+      btn.style.color = '#000';
+      form.reset();
+    } else {
+      btn.textContent = '✗ Failed. Try Again.';
+      btn.style.background = 'var(--red)';
+      btn.style.color = '#fff';
+    }
+  } catch {
+    btn.textContent = '✗ Network Error.';
+    btn.style.background = 'var(--red)';
+    btn.style.color = '#fff';
   }
+
+  btn.disabled = false;
+  setTimeout(() => {
+    btn.textContent = 'Send Message →';
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 3500);
+}
 </script>
 </body>
 </html>
